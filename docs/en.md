@@ -42,7 +42,6 @@
 * [📆 Recruitment time post](#recruitment-time-post)
 * [👍 Recommend](#recommend)
 * [👬 Contributor](#contributor)
-* [🍭 Support Sponsor](#support-sponsor)
 * [📜 License](#license)
 
 
@@ -64,9 +63,9 @@
 * Pointer
      * Pointer to const
      * A pointer to a constant itself (const pointer)
-* Quote
+* Reference
      * Reference to const
-     * There is no const reference because the reference itself is a const pointer
+     * There is no const reference because the reference is an alias of an object, the reference is not an object
 
 > (Think of it for convenience) The value modified by const (after const) cannot be changed, such as `p2`, `p3` in the usage example below
 
@@ -80,7 +79,7 @@ const use
 class A
 {
 private:
-    const int a;                // constant object member, can only be assigned in the initialization list
+    const int a;                // constant object member, can use initialization list or in-class initializer
 
 public:
     // Constructor
@@ -95,7 +94,7 @@ public:
 void function()
 {
     // object
-    A b;                        // ordinary object, can call all member functions, update constant member variables
+    A b;                        // ordinary object, can call all member functions
     const A a;                  // constant object, can only call constant member functions
     const A *p = &a;            // pointer variable, point to a constant object
     const A &q = a;             // reference to constant object
@@ -119,6 +118,17 @@ const int function5();      // returns a constant
 const int* function6();     // returns a pointer variable to a constant, use: const int * p = function6 ();
 int* const function7();     // returns a constant pointer to a variable, use: int * const p = function7 ();
 ```
+
+#### #define and const constants 
+
+#define|const constants
+---|---
+Macro definitions, equivalent to character substitution|constant declarations
+preprocessor processing|compiler processing
+without type safety checking|with type safety checking
+no memory allocation|memory allocation required
+stored in code segment|stored in data segment
+Can be canceled by `#undef`|Not cancelable
 
 ### static
 
@@ -2328,7 +2338,7 @@ TCP Congestion control graph
 
 > ["Computer Network (7th Edition) -Xie Xiren"](https://raw.githubusercontent.com/huihut/interview/master/images/TCP-transport-connection-management.png)
 
-##### TCP 四次挥手释放连接
+##### TCP Four waves to release the connection
 
 ![UDP 报文](https://raw.githubusercontent.com/huihut/interview/master/images/TCP四次挥手释放连接.png)
 
@@ -2339,7 +2349,7 @@ TCP Congestion control graph
 3. The client receives the ACK from the server, and the connection from the client to the server has been released (but the connection from the server to the client has not been released, and the client can still receive data);
 4. The server continues to send the unfinished data to the client;
 5. The server sends FIN + ACK to the client, indicating that the server has sent the data (request to release the connection from the server to the client, even if no reply is received from the client, it will be automatically released after a certain period of time);
-6. The client receives the FIN + ACK from the server and replies to the client with an ACK (agreeing to release the connection from the server to the client);
+6. The client receives the FIN + ACK from the server and replies to the server with an ACK (agreeing to release the connection from the server to the client);
 7. After receiving the ACK from the client, the server releases the connection from the server to the client.
 
 ##### Why does TCP have to wave four times?
@@ -3414,12 +3424,6 @@ contain:
 ## 👬 Contributor
 
 <a href="https://github.com/huihut/interview/graphs/contributors"><img src="https://opencollective.com/interview/contributors.svg?button=false" /></a>
-
-<a id="support-sponsor"></a>
-
-## 🍭 Support sponsorship
-
-**[Avalive](https://store.steampowered.com/app/1137770/Avalive/)** - A avatar role-playing software for facial capture.
 
 <a id="license"></a>
 

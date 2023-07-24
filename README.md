@@ -16,9 +16,9 @@
 
 📚 本仓库是面向 C/C++ 技术方向校招求职者、初学者的基础知识总结，包括语言、程序库、数据结构、算法、系统、网络、链接装载库等知识及面试经验、招聘、内推等信息。
 
-💡 侧边目录支持方式：[📚 Docsify 文档](https://interview.huihut.com)、[Github + TOC 导航](https://github.com/jawil/GayHub)（[TOC预览.png](https://raw.githubusercontent.com/huihut/interview/master/images/TOC预览.png)）
+💡 侧边目录支持方式：[📚 Docsify 文档](https://interview.huihut.com)、[Github + TOC 导航](https://github.com/jawil/GayHub)（[TOC预览.png](https://gitee.com/huihut/interview/raw/master/images/TOC预览.png)）
 
-📄 保存为 PDF 方式：使用 Chrome 浏览器打开 <a href="https://interview.huihut.com">📚 Docsify 文档</a> 页面，缩起左侧目录-右键 - 打印 - 选择目标打印机是另存为PDF - 保存（[打印预览.png](https://raw.githubusercontent.com/huihut/interview/master/images/打印预览.png)）
+📄 保存为 PDF 方式：使用 Chrome 浏览器打开 <a href="https://interview.huihut.com">📚 Docsify 文档</a> 页面，缩起左侧目录-右键 - 打印 - 选择目标打印机是另存为PDF - 保存（[打印预览.png](https://gitee.com/huihut/interview/raw/master/images/打印预览.png)）
 
 🙏 仓库内容如有错误或改进欢迎 issue 或 pr，建议或讨论可在 [#12](https://github.com/huihut/interview/issues/12) 提出。由于本人水平有限，仓库中的知识点有来自本人原创、读书笔记、书籍、博文等，非原创均已标明出处，如有遗漏，请 issue 提出。本仓库遵循 [CC BY-NC-SA 4.0（署名 - 非商业性使用 - 相同方式共享）](https://github.com/huihut/interview/blob/master/LICENSE) 协议，转载请注明出处，不得用于商业目的。
 
@@ -45,7 +45,6 @@
 * [📆 招聘时间岗位](#recruitment-time-post)
 * [👍 内推](#recommend)
 * [👬 贡献者](#contributor)
-* [🍭 支持赞助](#support-sponsor)
 * [📜 License](#license)
 
 
@@ -69,7 +68,7 @@
     * 自身是常量的指针（常量指针，const pointer）
 * 引用
     * 指向常量的引用（reference to const）
-    * 没有 const reference，因为引用本身就是 const pointer
+    * 没有 const reference，因为引用只是对象的别名，引用不是对象，不能用 const 修饰
 
 > （为了方便记忆可以想成）被 const 修饰（在 const 后面）的值不可改变，如下文使用例子中的 `p2`、`p3`
 
@@ -82,7 +81,7 @@ const 使用
 class A
 {
 private:
-    const int a;                // 常对象成员，只能在初始化列表赋值
+    const int a;                // 常对象成员，可以使用初始化列表或者类内初始化
 
 public:
     // 构造函数
@@ -97,7 +96,7 @@ public:
 void function()
 {
     // 对象
-    A b;                        // 普通对象，可以调用全部成员函数、更新常成员变量
+    A b;                        // 普通对象，可以调用全部成员函数
     const A a;                  // 常对象，只能调用常成员函数
     const A *p = &a;            // 指针变量，指向常对象
     const A &q = a;             // 指向常对象的引用
@@ -121,6 +120,17 @@ const int function5();      // 返回一个常数
 const int* function6();     // 返回一个指向常量的指针变量，使用：const int *p = function6();
 int* const function7();     // 返回一个指向变量的常指针，使用：int* const p = function7();
 ```
+
+#### 宏定义 #define 和 const 常量 
+
+宏定义 #define|const 常量
+---|---
+宏定义，相当于字符替换|常量声明
+预处理器处理|编译器处理
+无类型安全检查|有类型安全检查
+不分配内存|要分配内存
+存储在代码段|存储在数据段
+可通过 `#undef` 取消|不可取消
 
 ### static
 
@@ -206,7 +216,7 @@ inline int A::doA() { return 0; }   // 需要显式内联
 > [Are "inline virtual" member functions ever actually "inlined"?](http://www.cs.technion.ac.il/users/yechiel/c++-faq/inline-virtuals.html)
 
 * 虚函数可以是内联函数，内联是可以修饰虚函数的，但是当虚函数表现多态性的时候不能内联。
-* 内联是在编译器建议编译器内联，而虚函数的多态性在运行期，编译器无法知道运行期调用哪个代码，因此虚函数表现为多态性时（运行期）不可以内联。
+* 内联是在编译期建议编译器内联，而虚函数的多态性在运行期，编译器无法知道运行期调用哪个代码，因此虚函数表现为多态性时（运行期）不可以内联。
 * `inline virtual` 唯一可以内联的时候是：编译器知道所调用的对象是哪个类（如 `Base::who()`），这只有在编译器具有实际对象而不是对象的指针或引用时才会发生。
 
 虚函数内联使用
@@ -496,7 +506,7 @@ int main()
 	A a5 = (A)1;		// OK：允许 static_cast 的显式转换 
 	doA(1);			// OK：允许从 int 到 A 的隐式转换
 	if (a1);		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
-	bool a6（a1）;		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
+	bool a6(a1);		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
 	bool a7 = a1;		// OK：使用转换函数 A::operator bool() 的从 A 到 bool 的隐式转换
 	bool a8 = static_cast<bool>(a1);  // OK ：static_cast 进行直接初始化
 
@@ -763,7 +773,7 @@ int main()
 
 面向对象程序设计（Object-oriented programming，OOP）是种具有对象概念的程序编程典范，同时也是一种程序开发的抽象方针。
 
-![面向对象特征](https://raw.githubusercontent.com/huihut/interview/master/images/面向对象基本特征.png)
+![面向对象特征](https://gitee.com/huihut/interview/raw/master/images/面向对象基本特征.png)
 
 面向对象三大特征 —— 封装、继承、多态
 
@@ -805,11 +815,12 @@ public:
 ```
 
 #### 动态多态（运行期期/晚绑定）
-
 * 虚函数：用 virtual 修饰成员函数，使其成为虚函数
+* 动态绑定：当使用基类的引用或指针调用一个虚函数时将发生动态绑定
 
 **注意：**
 
+* 可以将派生类的对象赋值给基类的指针或引用，反之不可
 * 普通函数（非类成员函数）不能是虚函数
 * 静态函数（static）不能是虚函数
 * 构造函数不能是虚函数（因为在调用构造函数时，虚表指针并没有在对象的内存空间中，必须要构造函数调用完成后才会形成虚表指针）
@@ -927,9 +938,9 @@ virtual int A() = 0;
         * 虚函数不占用存储空间
         * 虚函数表存储的是虚函数地址
 
-### 模板类、成员模板、虚函数
+### 类模板、成员模板、虚函数
 
-* 模板类中可以使用虚函数
+* 类模板中可以使用虚函数
 * 一个类（无论是普通类还是类模板）的成员模板（本身是模板的成员函数）不能是虚函数
 
 ### 抽象类、接口类、聚合类
@@ -1362,7 +1373,7 @@ typedef struct {
 } SqStack;
 ```
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/SqStack.png)
+![](https://gitee.com/huihut/interview/raw/master/images/SqStack.png)
 
 #### 队列（Sequence Queue）
 
@@ -1381,7 +1392,7 @@ typedef struct {
 
 非循环队列图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/SqQueue.png)
+![](https://gitee.com/huihut/interview/raw/master/images/SqQueue.png)
 
 `SqQueue.rear++`
 
@@ -1389,7 +1400,7 @@ typedef struct {
 
 循环队列图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/SqLoopStack.png)
+![](https://gitee.com/huihut/interview/raw/master/images/SqLoopStack.png)
 
 `SqQueue.rear = (SqQueue.rear + 1) % SqQueue.maxSize`
 
@@ -1408,7 +1419,7 @@ typedef struct {
 } SqList;
 ```
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/SqList.png)
+![](https://gitee.com/huihut/interview/raw/master/images/SqList.png)
 
 
 ### 链式结构
@@ -1430,7 +1441,7 @@ typedef struct LNode {
 
 链队列图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/LinkQueue.png)
+![](https://gitee.com/huihut/interview/raw/master/images/LinkQueue.png)
 
 #### 线性表的链式表示
 
@@ -1438,19 +1449,19 @@ typedef struct LNode {
 
 单链表图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/LinkList.png)
+![](https://gitee.com/huihut/interview/raw/master/images/LinkList.png)
 
 ##### 双向链表（Du-Link-List）
 
 双向链表图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/DuLinkList.png)
+![](https://gitee.com/huihut/interview/raw/master/images/DuLinkList.png)
 
 ##### 循环链表（Cir-Link-List）
 
 循环链表图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/CirLinkList.png)
+![](https://gitee.com/huihut/interview/raw/master/images/CirLinkList.png)
 
 ### 哈希表
 
@@ -1495,7 +1506,7 @@ typedef struct {
 }HashTable;
 ```
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/HashTable.png)
+![](https://gitee.com/huihut/interview/raw/master/images/HashTable.png)
 
 ### 递归
 
@@ -1543,7 +1554,7 @@ typedef struct GLNode {
 } *GList, GLNode;
 ```
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/GeneralizedList1.png)
+![](https://gitee.com/huihut/interview/raw/master/images/GeneralizedList1.png)
 
 ##### 扩展线性链表存储表示
 
@@ -1566,7 +1577,7 @@ typedef struct GLNode1 {
 } *GList1, GLNode1;
 ```
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/GeneralizedList2.png)
+![](https://gitee.com/huihut/interview/raw/master/images/GeneralizedList2.png)
 
 ### 二叉树
 
@@ -1599,13 +1610,13 @@ typedef struct BiTNode
 
 二叉树顺序存储图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/SqBinaryTree.png)
+![](https://gitee.com/huihut/interview/raw/master/images/SqBinaryTree.png)
 
 ##### 链式存储
 
 二叉树链式存储图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/LinkBinaryTree.png)
+![](https://gitee.com/huihut/interview/raw/master/images/LinkBinaryTree.png)
 
 #### 遍历方式
 
@@ -1650,7 +1661,7 @@ typedef struct BiTNode
 
 平衡二叉树图片
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/Self-balancingBinarySearchTree.png)
+![](https://gitee.com/huihut/interview/raw/master/images/Self-balancingBinarySearchTree.png)
 
 ##### 最小失衡树
 
@@ -1994,8 +2005,8 @@ B树/B+树 |O(log<sub>2</sub>n) |   |
 
 大端小端图片
 
-![大端序](https://raw.githubusercontent.com/huihut/interview/master/images/CPU-Big-Endian.svg.png)
-![小端序](https://raw.githubusercontent.com/huihut/interview/master/images/CPU-Little-Endian.svg.png)
+![大端序](https://gitee.com/huihut/interview/raw/master/images/CPU-Big-Endian.svg.png)
+![小端序](https://gitee.com/huihut/interview/raw/master/images/CPU-Little-Endian.svg.png)
 
 ##### 判断大端小端
 
@@ -2061,7 +2072,7 @@ int main()
 
 计算机网络体系结构：
 
-![计算机网络体系结构](https://raw.githubusercontent.com/huihut/interview/master/images/计算机网络体系结构.png)
+![计算机网络体系结构](https://gitee.com/huihut/interview/raw/master/images/计算机网络体系结构.png)
 
 ### 各层作用及协议
 
@@ -2140,13 +2151,13 @@ E  类 | 前五位固定为 11110，后面保留为今后所用
 
 IP 数据报格式：
 
-![IP 数据报格式](https://raw.githubusercontent.com/huihut/interview/master/images/IP数据报格式.png)
+![IP 数据报格式](https://gitee.com/huihut/interview/raw/master/images/IP数据报格式.png)
 
 #### ICMP 网际控制报文协议
 
 ICMP 报文格式：
 
-![ICMP 报文格式](https://raw.githubusercontent.com/huihut/interview/master/images/ICMP报文格式.png)
+![ICMP 报文格式](https://gitee.com/huihut/interview/raw/master/images/ICMP报文格式.png)
 
 应用：
 * PING（Packet InterNet Groper，分组网间探测）测试两个主机之间的连通性
@@ -2216,11 +2227,11 @@ TCP 如何保证可靠传输：
 
 TCP 报文结构
 
-![TCP 报文](https://raw.githubusercontent.com/huihut/interview/master/images/TCP报文.png)
+![TCP 报文](https://gitee.com/huihut/interview/raw/master/images/TCP报文.png)
 
 TCP 首部
 
-![TCP 首部](https://raw.githubusercontent.com/huihut/interview/master/images/TCP首部.png)
+![TCP 首部](https://gitee.com/huihut/interview/raw/master/images/TCP首部.png)
 
 TCP：状态控制码（Code，Control Flag），占 6 比特，含义如下：
 * URG：紧急比特（urgent），当 `URG＝1` 时，表明紧急指针字段有效，代表该封包为紧急封包。它告诉系统此报文段中有紧急数据，应尽快传送(相当于高优先级的数据)， 且上图中的 Urgent Pointer 字段也会被启用。
@@ -2244,11 +2255,11 @@ TCP：状态控制码（Code，Control Flag），占 6 比特，含义如下：
 
 UDP 报文结构
 
-![UDP 报文](https://raw.githubusercontent.com/huihut/interview/master/images/UDP报文.png)
+![UDP 报文](https://gitee.com/huihut/interview/raw/master/images/UDP报文.png)
 
 UDP 首部
 
-![UDP 首部](https://raw.githubusercontent.com/huihut/interview/master/images/UDP首部.png)
+![UDP 首部](https://gitee.com/huihut/interview/raw/master/images/UDP首部.png)
 
 > TCP/UDP 图片来源于：<https://github.com/JerryC8080/understand-tcp-udp>
 
@@ -2285,7 +2296,7 @@ TCP 是一个基于字节流的传输服务（UDP 基于报文的），“流”
 
 利用可变窗口进行流量控制
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/利用可变窗口进行流量控制举例.png)
+![](https://gitee.com/huihut/interview/raw/master/images/利用可变窗口进行流量控制举例.png)
 
 #### TCP 拥塞控制
 
@@ -2302,17 +2313,17 @@ TCP 是一个基于字节流的传输服务（UDP 基于报文的），“流”
 
 TCP的拥塞控制图
 
-![](https://raw.githubusercontent.com/huihut/interview/master/images/TCP拥塞窗口cwnd在拥塞控制时的变化情况.png)
-![](https://raw.githubusercontent.com/huihut/interview/master/images/快重传示意图.png)
-![](https://raw.githubusercontent.com/huihut/interview/master/images/TCP的拥塞控制流程图.png)
+![](https://gitee.com/huihut/interview/raw/master/images/TCP拥塞窗口cwnd在拥塞控制时的变化情况.png)
+![](https://gitee.com/huihut/interview/raw/master/images/快重传示意图.png)
+![](https://gitee.com/huihut/interview/raw/master/images/TCP的拥塞控制流程图.png)
 
 #### TCP 传输连接管理
 
-> 因为 TCP 三次握手建立连接、四次挥手释放连接很重要，所以附上《计算机网络（第 7 版）-谢希仁》书中对此章的详细描述：<https://raw.githubusercontent.com/huihut/interview/master/images/TCP-transport-connection-management.png>
+> 因为 TCP 三次握手建立连接、四次挥手释放连接很重要，所以附上《计算机网络（第 7 版）-谢希仁》书中对此章的详细描述：<https://gitee.com/huihut/interview/raw/master/images/TCP-transport-connection-management.png>
 
 ##### TCP 三次握手建立连接
 
-![UDP 报文](https://raw.githubusercontent.com/huihut/interview/master/images/TCP三次握手建立连接.png)
+![UDP 报文](https://gitee.com/huihut/interview/raw/master/images/TCP三次握手建立连接.png)
 
 【TCP 建立连接全过程解释】
 
@@ -2333,11 +2344,11 @@ TCP的拥塞控制图
 
 【答案三】为了防止已失效的连接请求报文段突然又传送到了服务端，因而产生错误。
 
-> [《计算机网络（第 7 版）-谢希仁》](https://raw.githubusercontent.com/huihut/interview/master/images/TCP-transport-connection-management.png)
+> [《计算机网络（第 7 版）-谢希仁》](https://gitee.com/huihut/interview/raw/master/images/TCP-transport-connection-management.png)
 
 ##### TCP 四次挥手释放连接
 
-![UDP 报文](https://raw.githubusercontent.com/huihut/interview/master/images/TCP四次挥手释放连接.png)
+![UDP 报文](https://gitee.com/huihut/interview/raw/master/images/TCP四次挥手释放连接.png)
 
 【TCP 释放连接全过程解释】
 
@@ -2346,7 +2357,7 @@ TCP的拥塞控制图
 3. 客户端收到服务端回复的 ACK，此时从客户端到服务器的连接已释放（但服务端到客户端的连接还未释放，并且客户端还可以接收数据）；
 4. 服务端继续发送之前没发完的数据给客户端；
 5. 服务端发送 FIN+ACK 给客户端，说明服务端发送完了数据（请求释放从服务端到客户端的连接，就算没收到客户端的回复，过段时间也会自动释放）；
-6. 客户端收到服务端的 FIN+ACK，并回复 ACK 给客户端（同意释放从服务端到客户端的连接）；
+6. 客户端收到服务端的 FIN+ACK，并回复 ACK 给服务端（同意释放从服务端到客户端的连接）；
 7. 服务端收到客户端的 ACK 后，释放从服务端到客户端的连接。
 
 ##### TCP 为什么要进行四次挥手？
@@ -2370,7 +2381,7 @@ TCP的拥塞控制图
 
 TCP 有限状态机图片
 
-![TCP 的有限状态机](https://raw.githubusercontent.com/huihut/interview/master/images/TCP的有限状态机.png)
+![TCP 的有限状态机](https://gitee.com/huihut/interview/raw/master/images/TCP的有限状态机.png)
 
 ### 应用层
 
@@ -2468,7 +2479,7 @@ TRACE | 回显服务器收到的请求，主要用于测试或诊断
 
 > [Linux Socket 编程（不限 Linux）](https://www.cnblogs.com/skynet/archive/2010/12/12/1903949.html)
 
-![Socket 客户端服务器通讯](https://raw.githubusercontent.com/huihut/interview/master/images/socket客户端服务器通讯.jpg)
+![Socket 客户端服务器通讯](https://gitee.com/huihut/interview/raw/master/images/socket客户端服务器通讯.jpg)
 
 
 #### Socket 中的 read()、write() 函数
@@ -2648,7 +2659,7 @@ ssize_t write(int fd, const void *buf, size_t count);
 * 基本封锁类型：排他锁（X 锁 / 写锁）、共享锁（S 锁 / 读锁）。
 * 活锁死锁：
     * 活锁：事务永远处于等待状态，可通过先来先服务的策略避免。
-    * 死锁：事物永远不能结束
+    * 死锁：事务永远不能结束
         * 预防：一次封锁法、顺序封锁法；
         * 诊断：超时法、等待图法；
         * 解除：撤销处理死锁代价最小的事务，并释放此事务的所有的锁，使其他事务得以继续运行下去。
@@ -3077,11 +3088,11 @@ LoadLibrary 与 FreeLibrary 流程图
 
 ##### LoadLibrary
 
-![WindowsLoadLibrary](https://raw.githubusercontent.com/huihut/interview/master/images/WindowsLoadLibrary.png)
+![WindowsLoadLibrary](https://gitee.com/huihut/interview/raw/master/images/WindowsLoadLibrary.png)
 
 ##### FreeLibrary
 
-![WindowsFreeLibrary](https://raw.githubusercontent.com/huihut/interview/master/images/WindowsFreeLibrary.png)
+![WindowsFreeLibrary](https://gitee.com/huihut/interview/raw/master/images/WindowsFreeLibrary.png)
 
 #### DLL 库的编写（导出一个 DLL 模块）
 
@@ -3406,7 +3417,7 @@ int main( void )
 
 ## 📆 招聘时间岗位
 
-* [牛客网 . 2020届校招 | 2020 IT名企校招日程](https://www.nowcoder.com/school/schedule)
+* [牛客网 . 名企校招日程](https://www.nowcoder.com/school/schedule)
 
 <a id="recommend"></a>
 
@@ -3420,12 +3431,6 @@ int main( void )
 ## 👬 贡献者
 
 <a href="https://github.com/huihut/interview/graphs/contributors"><img src="https://opencollective.com/interview/contributors.svg?button=false" /></a>
-
-<a id="support-sponsor"></a>
-
-## 🍭 支持赞助
-
-**[Avalive](https://store.steampowered.com/app/1137770/Avalive/)**：一个面部捕捉的虚拟形象扮演软件。
 
 <a id="license"></a>
 

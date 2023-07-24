@@ -49,7 +49,6 @@ English
 * [📆 Recruitment time post](#recruitment-time-post)
 * [👍 Recommend](#recommend)
 * [👬 Contributor](#contributor)
-* [🍭 Support Sponsor](#support-sponsor)
 * [📜 License](#license)
 
 
@@ -71,9 +70,9 @@ English
 * Pointer
      * Pointer to const
      * A pointer to a constant itself (const pointer)
-* Quote
+* Reference
      * Reference to const
-     * There is no const reference because the reference itself is a const pointer
+     * There is no const reference because the reference is an alias of an object, the reference is not an object
 
 > (Think of it for convenience) The value modified by const (after const) cannot be changed, such as `p2`, `p3` in the usage example below
 
@@ -87,7 +86,7 @@ const use
 class A
 {
 private:
-    const int a;                // constant object member, can only be assigned in the initialization list
+    const int a;                // constant object member, can use initialization list or in-class initializer
 
 public:
     // Constructor
@@ -102,7 +101,7 @@ public:
 void function()
 {
     // object
-    A b;                        // ordinary object, can call all member functions, update constant member variables
+    A b;                        // ordinary object, can call all member functions
     const A a;                  // constant object, can only call constant member functions
     const A *p = &a;            // pointer variable, point to a constant object
     const A &q = a;             // reference to constant object
@@ -126,6 +125,17 @@ const int function5();      // returns a constant
 const int* function6();     // returns a pointer variable to a constant, use: const int * p = function6 ();
 int* const function7();     // returns a constant pointer to a variable, use: int * const p = function7 ();
 ```
+
+#### #define and const constants 
+
+#define|const constants
+---|---
+Macro definitions, equivalent to character substitution|constant declarations
+preprocessor processing|compiler processing
+without type safety checking|with type safety checking
+no memory allocation|memory allocation required
+stored in code segment|stored in data segment
+Can be canceled by `#undef`|Not cancelable
 
 ### static
 
@@ -500,7 +510,7 @@ int main()
 	A a5 = (A)1;		// OK：Allow explicit conversion of static_cast
 	doA(1);			// OK：Allow implicit conversion from int to A
 	if (a1);		// OK: implicit conversion from A to bool using conversion function A ::operator bool()
-	bool a6（a1）;		// OK: implicit conversion from A to bool using conversion function A::operator bool()
+	bool a6(a1);		// OK: implicit conversion from A to bool using conversion function A::operator bool()
 	bool a7 = a1;		// OK: implicit conversion from A to bool using conversion function A::operator bool()
 	bool a8 = static_cast<bool>(a1);  // OK: static_cast for direct initialization
 
@@ -811,9 +821,11 @@ public:
 #### Dynamic polymorphism (runtime / late binding)
 
 * Virtual functions: decorate member functions with virtual to make them virtual
+* Dynamic binding: dynamic binding occurs when a virtual function is called using a reference or pointer to a base class
 
 **note:**
 
+* You can assign an object of a derived class to a pointer or reference of the base class, and not vice versa
 * Ordinary functions (non-class member functions) cannot be virtual functions
 * Static functions (static) cannot be virtual functions
 * The constructor cannot be a virtual function (because when the constructor is called, the virtual table pointer is not in the object's memory space, the virtual table pointer must be formed after the constructor is called)
@@ -2335,7 +2347,7 @@ TCP Congestion control graph
 
 > ["Computer Network (7th Edition) -Xie Xiren"](https://raw.githubusercontent.com/huihut/interview/master/images/TCP-transport-connection-management.png)
 
-##### TCP 四次挥手释放连接
+##### TCP Four waves to release the connection
 
 ![UDP 报文](https://raw.githubusercontent.com/huihut/interview/master/images/TCP四次挥手释放连接.png)
 
@@ -2346,7 +2358,7 @@ TCP Congestion control graph
 3. The client receives the ACK from the server, and the connection from the client to the server has been released (but the connection from the server to the client has not been released, and the client can still receive data);
 4. The server continues to send the unfinished data to the client;
 5. The server sends FIN + ACK to the client, indicating that the server has sent the data (request to release the connection from the server to the client, even if no reply is received from the client, it will be automatically released after a certain period of time);
-6. The client receives the FIN + ACK from the server and replies to the client with an ACK (agreeing to release the connection from the server to the client);
+6. The client receives the FIN + ACK from the server and replies to the server with an ACK (agreeing to release the connection from the server to the client);
 7. After receiving the ACK from the client, the server releases the connection from the server to the client.
 
 ##### Why does TCP have to wave four times?
@@ -2648,7 +2660,7 @@ So there is a FIN and ACK in each direction.
 * Basic lock types: exclusive lock (X lock / write lock), shared lock (S lock / read lock).
 * Livelock deadlock:
     * Livelock: The transaction is always in a waiting state, which can be avoided through a first come, first served policy.
-    * Deadlock: Things can never end
+    * Deadlock: The transaction can never end
         * Prevention: one-time block method, sequential block method;
         * Diagnosis: timeout method, waiting graph method;
         * Cancel: Undo the transaction with the least deadlock cost and release all the locks of this transaction, so that other transactions can continue to run.
@@ -3384,7 +3396,7 @@ contain:
 
 ## 📝 Interview Question Experience
 
-* [Newcoder.com's summary of the 2020 autumn tricks! (Post division)](https://www.nowcoder.com/discuss/205497)
+* [Nowcoder.com's summary of the 2020 autumn tricks! (Post division)](https://www.nowcoder.com/discuss/205497)
 * [【Preparation for Autumn Moves】 Raiders for 2020 Autumn Moves](https://www.nowcoder.com/discuss/197116)
 * [2019 School Recruitment Summary! 【Daily Update】](https://www.nowcoder.com/discuss/90907)
 * [2019 School Recruitment Technology Posts Summary [Technology]](https://www.nowcoder.com/discuss/146655)
@@ -3392,8 +3404,8 @@ contain:
 * [2017 Autumn Campus Recruitment Pen and Face Summaries](https://www.nowcoder.com/discuss/12805)
 * [The most complete collection of 2017 spring tricks in history!!](https://www.nowcoder.com/discuss/25268)
 * [Interview questions are here](https://www.nowcoder.com/discuss/57978)
-* [Knowing.. On the Internet job search, what well-written and attentive face have you seen? It is best to share your own facial and mental journey. ](https://www.zhihu.com/question/29693016)
-* [Know. What are the most common interview algorithm questions for internet companies? ](https://www.zhihu.com/question/24964987)
+* [zhihu. On the Internet job search, what well-written and attentive face have you seen? It is best to share your own facial and mental journey. ](https://www.zhihu.com/question/29693016)
+* [zhihu. What are the most common interview algorithm questions for internet companies? ](https://www.zhihu.com/question/24964987)
 * [CSDN. C ++ Interview Questions Completely Organized](http://blog.csdn.net/ljzcome/article/details/574158)
 * [CSDN. Baidu R & D interview questions (C ++ direction)](http://blog.csdn.net/Xiongchao99/article/details/74524807?locationNum=6&fps=1)
 * [CSDN. C ++ 30 common interview questions](http://blog.csdn.net/fakine/article/details/51321544)
@@ -3407,7 +3419,7 @@ contain:
 
 ## 📆 Recruiting time posts
 
-* [Niuke.com 2020 School Recruitment | 2020 IT Enterprise Recruitment Schedule](https://www.nowcoder.com/school/schedule)
+* [nowcoder . Enterprise Recruitment Schedule](https://www.nowcoder.com/school/schedule)
 
 <a id="recommend"></a>
 
@@ -3421,12 +3433,6 @@ contain:
 ## 👬 Contributor
 
 <a href="https://github.com/huihut/interview/graphs/contributors"><img src="https://opencollective.com/interview/contributors.svg?button=false" /></a>
-
-<a id="support-sponsor"></a>
-
-## 🍭 Support sponsorship
-
-**[Avalive](https://store.steampowered.com/app/1137770/Avalive/)** - A avatar role-playing software for facial capture.
 
 <a id="license"></a>
 
